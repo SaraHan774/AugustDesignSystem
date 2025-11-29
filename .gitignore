@@ -95,3 +95,4 @@ storybook-static/
 # Logs
 *.log
 logs/
+/.claude/
