@@ -96,3 +96,6 @@ storybook-static/
 # Logs
 *.log
 logs/
+
+release/
+COMPONENT_PLAN.md
