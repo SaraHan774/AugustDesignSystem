@@ -22,6 +22,7 @@ const config: StorybookConfig = {
   },
   async viteFinal(config) {
     return mergeConfig(config, {
+      base: process.env.STORYBOOK_BASE || '/',
       resolve: {
         alias: {
           'react-native': 'react-native-web',
