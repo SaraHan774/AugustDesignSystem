@@ -1,5 +1,24 @@
 {
   "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@design-system": ["src/design-system/index"],
+      "@design-system/*": ["src/design-system/*"],
+      "@tokens": ["src/design-system/tokens/index"],
+      "@tokens/*": ["src/design-system/tokens/*"],
+      "@theme": ["src/design-system/theme/index"],
+      "@theme/*": ["src/design-system/theme/*"],
+      "@hooks": ["src/design-system/hooks/index"],
+      "@hooks/*": ["src/design-system/hooks/*"],
+      "@components": ["src/design-system/components/index"],
+      "@components/*": ["src/design-system/components/*"],
+      "@types": ["src/design-system/types/index"],
+      "@utils": ["src/design-system/utils/index"],
+      "@constants": ["src/design-system/constants/index"]
+    }
+  },
   "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

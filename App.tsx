@@ -1,45 +1,46 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * AugustDesignSystem - Demo App
  *
- * @format
+ * Showcases all design system components and tokens
  */
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import React from 'react';
+import { View, StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ThemeProvider, useTheme } from '@theme';
+import { ShowcasePage } from './src/showcase';
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+/**
+ * AppContent - 메인 앱 컨텐츠
+ * StatusBar와 ShowcasePage를 포함하는 최상위 컴포넌트
+ */
+function AppContent(): React.ReactElement {
+  const { isDark } = useTheme();
 
   return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
+    <View style={{ "flex": 1 }}>
+      <StatusBar 
+        barStyle={isDark ? 'light-content' : 'dark-content'} 
+        backgroundColor="transparent"
+        translucent
       />
+      <ShowcasePage />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+/**
+ * App - 앱의 최상위 컴포넌트
+ * SafeAreaProvider와 ThemeProvider로 앱을 감싸고 ShowcasePage를 메인 페이지로 표시
+ */
+function App(): React.ReactElement {
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider defaultColorMode="system">
+        <AppContent />
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
+}
 
 export default App;
