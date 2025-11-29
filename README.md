@@ -55,7 +55,7 @@ function App() {
 
 View the full documentation and interactive examples:
 
-**[Storybook Documentation](https://yourusername.github.io/august-design-system)**
+**[Storybook Documentation](https://SaraHan774.github.io/AugustDesignSystem)**
 
 ## Components
 

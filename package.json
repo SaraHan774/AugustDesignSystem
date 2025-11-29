@@ -110,11 +110,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/august-design-system"
+    "url": "https://github.com/SaraHan774/AugustDesignSystem"
   },
-  "homepage": "https://yourusername.github.io/august-design-system",
+  "homepage": "https://SaraHan774.github.io/AugustDesignSystem",
   "bugs": {
-    "url": "https://github.com/yourusername/august-design-system/issues"
+    "url": "https://github.com/SaraHan774/AugustDesignSystem/issues"
   },
   "keywords": [
     "react-native",
