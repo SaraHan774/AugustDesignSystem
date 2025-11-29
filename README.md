@@ -1,97 +1,228 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# August Design System
 
-# Getting Started
+A comprehensive React Native design system following Apple Human Interface Guidelines. Build beautiful, accessible, and consistent UIs for iOS, Android, and Web.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+[![npm version](https://badge.fury.io/js/august-design-system.svg)](https://www.npmjs.com/package/august-design-system)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Step 1: Start Metro
+## Features
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Apple HIG Compliant** - Follows iOS design patterns and accessibility guidelines
+- **Cross-Platform** - Works on iOS, Android, and Web (React Native Web)
+- **Fully Typed** - Complete TypeScript support with comprehensive types
+- **Themeable** - Light/dark mode support with customizable design tokens
+- **Accessible** - Built-in accessibility support with proper labels and roles
+- **Chat SDK Components** - Ready-to-use messaging components
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Installation
 
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```bash
+npm install august-design-system
+# or
+yarn add august-design-system
 ```
 
-## Step 2: Build and run your app
+### Peer Dependencies
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+Make sure you have these peer dependencies installed:
 
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```bash
+npm install react react-native react-native-safe-area-context
 ```
 
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
+For web support:
+```bash
+npm install react-native-web
 ```
 
-Then, and every time you update your native dependencies, run:
+## Quick Start
 
-```sh
-bundle exec pod install
+Wrap your app with the `ThemeProvider`:
+
+```tsx
+import { ThemeProvider, Button } from 'august-design-system';
+
+function App() {
+  return (
+    <ThemeProvider>
+      <Button title="Get Started" onPress={() => console.log('Pressed!')} />
+    </ThemeProvider>
+  );
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## Documentation
 
-```sh
-# Using npm
-npm run ios
+View the full documentation and interactive examples:
 
-# OR using Yarn
-yarn ios
+**[Storybook Documentation](https://yourusername.github.io/august-design-system)**
+
+## Components
+
+### Core Components
+
+| Component | Description |
+|-----------|-------------|
+| `Button` | Interactive button with multiple variants (filled, tinted, outlined, ghost) |
+
+### Chat SDK Components
+
+| Component | Description |
+|-----------|-------------|
+| `Avatar` | User avatar with initials fallback and group support |
+| `MessageBubble` | Chat message bubble for text, images, and files |
+| `InputBar` | Message input with attachments and error states |
+| `ConversationListItem` | Chat list item with badges and status |
+| `StatusBadge` | Online/offline presence indicator |
+| `UnreadBadge` | Unread message count badge |
+| `TypingIndicator` | Animated typing indicator |
+
+## Usage Examples
+
+### Button Variants
+
+```tsx
+import { Button } from 'august-design-system';
+
+// Filled button (default)
+<Button title="Primary" variant="filled" colorScheme="primary" />
+
+// Outlined button
+<Button title="Cancel" variant="outlined" colorScheme="neutral" />
+
+// Destructive button
+<Button title="Delete" variant="filled" colorScheme="destructive" />
+
+// Loading state
+<Button title="Save" loading loadingText="Saving..." />
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### Chat Components
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```tsx
+import {
+  Avatar,
+  MessageBubble,
+  InputBar,
+  ConversationListItem
+} from 'august-design-system';
 
-## Step 3: Modify your app
+// Avatar with status
+<Avatar name="John Doe" size="lg" status="online" />
 
-Now that you have successfully run the app, let's make changes!
+// Group avatar
+<Avatar
+  group={[
+    { name: 'Alice' },
+    { name: 'Bob' },
+    { name: 'Charlie' },
+  ]}
+  size="md"
+/>
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+// Message bubble
+<MessageBubble
+  direction="outgoing"
+  text="Hello! How are you?"
+  timestamp={new Date()}
+  status="read"
+/>
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+// Conversation list item
+<ConversationListItem
+  id="conv-1"
+  title="John Doe"
+  subtitle="Hey, how are you?"
+  timestamp={new Date()}
+  unreadCount={3}
+  avatarName="John Doe"
+  presenceStatus="online"
+  onPress={() => openChat('conv-1')}
+/>
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### Theming
 
-## Congratulations! :tada:
+```tsx
+import { ThemeProvider, useTheme, createTheme } from 'august-design-system';
 
-You've successfully run and modified your React Native App. :partying_face:
+// Use the theme hook
+function MyComponent() {
+  const { theme, isDark, toggleColorMode } = useTheme();
 
-### Now what?
+  return (
+    <View style={{ backgroundColor: theme.colors.background.primary }}>
+      <Text style={{ color: theme.colors.label.primary }}>
+        Hello World
+      </Text>
+    </View>
+  );
+}
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+// Custom theme
+const customTheme = createTheme({
+  colors: {
+    interactive: {
+      tint: '#FF6B6B',
+    },
+  },
+});
 
-# Troubleshooting
+<ThemeProvider theme={customTheme}>
+  <App />
+</ThemeProvider>
+```
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### Design Tokens
 
-# Learn More
+Access design tokens directly:
 
-To learn more about React Native, take a look at the following resources:
+```tsx
+import { spacing, typography, radius, colors } from 'august-design-system/tokens';
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+const styles = StyleSheet.create({
+  container: {
+    padding: spacing.lg,      // 16pt
+    borderRadius: radius.md,  // 12pt
+  },
+  text: {
+    ...typography.body,
+    color: colors.label.primary,
+  },
+});
+```
+
+## API Reference
+
+### ThemeProvider Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `theme` | `ThemeConfig` | `defaultTheme` | Custom theme configuration |
+| `colorMode` | `'light' \| 'dark' \| 'system'` | `'system'` | Color mode preference |
+| `children` | `ReactNode` | - | Child components |
+
+### Button Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | Button label text |
+| `variant` | `'filled' \| 'tinted' \| 'gray' \| 'outlined' \| 'ghost'` | `'filled'` | Visual style |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Button size |
+| `colorScheme` | `'primary' \| 'destructive' \| 'success' \| 'neutral'` | `'primary'` | Color scheme |
+| `disabled` | `boolean` | `false` | Disable button |
+| `loading` | `boolean` | `false` | Show loading indicator |
+| `fullWidth` | `boolean` | `false` | Take full width |
+| `onPress` | `() => void` | - | Press handler |
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines before submitting a pull request.
+
+## License
+
+MIT License - see [LICENSE](./LICENSE) for details.
+
+---
+
+Built with love for the React Native community.

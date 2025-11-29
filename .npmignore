@@ -1,0 +1,49 @@
+# Source files (distributed as compiled)
+src/
+
+# Development configuration
+.storybook/
+.github/
+.claude/
+.vscode/
+.idea/
+
+# Config files
+*.config.js
+*.config.ts
+tsconfig*.json
+babel.config.js
+metro.config.js
+webpack.config.js
+jest.config.js
+.eslintrc*
+.prettierrc*
+
+# Test files
+__tests__/
+__mocks__/
+*.test.*
+*.spec.*
+coverage/
+
+# Showcase/demo app
+showcase/
+public/
+index.web.js
+
+# Build artifacts (except dist)
+storybook-static/
+android/
+ios/
+Pods/
+
+# Documentation source
+note/
+docs/
+
+# Misc
+*.log
+*.lock
+.DS_Store
+.env*
+Gemfile*
