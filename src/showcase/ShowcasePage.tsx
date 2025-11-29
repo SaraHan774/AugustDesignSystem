@@ -13,6 +13,14 @@ import {
   ButtonShowcase,
   ShadowShowcase,
   RadiusShowcase,
+  // Phase 0 Components
+  IconShowcase,
+  PressableShowcase,
+  DividerShowcase,
+  SpinnerShowcase,
+  ToastShowcase,
+  SearchBarShowcase,
+  EmptyStateShowcase,
   // Chat Components
   StatusBadgeShowcase,
   UnreadBadgeShowcase,
@@ -131,6 +139,15 @@ export function ShowcasePage(): React.ReactElement {
 
         {/* Base Components */}
         <ButtonShowcase />
+
+        {/* Phase 0 Components */}
+        <IconShowcase />
+        <PressableShowcase />
+        <DividerShowcase />
+        <SpinnerShowcase />
+        <ToastShowcase />
+        <SearchBarShowcase />
+        <EmptyStateShowcase />
 
         {/* Chat SDK Components */}
         <StatusBadgeShowcase />

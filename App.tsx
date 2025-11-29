@@ -8,6 +8,7 @@ import React from 'react';
 import { View, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from '@theme';
+import { ToastProvider } from '@components';
 import { ShowcasePage } from './src/showcase';
 
 /**
@@ -37,7 +38,9 @@ function App(): React.ReactElement {
   return (
     <SafeAreaProvider>
       <ThemeProvider defaultColorMode="system">
-        <AppContent />
+        <ToastProvider>
+          <AppContent />
+        </ToastProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );

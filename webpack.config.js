@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const appDirectory = path.resolve(__dirname);
@@ -9,9 +10,27 @@ const moduleResolverPlugin = babelConfig.plugins.find(
   (plugin) => Array.isArray(plugin) && plugin[0] === 'module-resolver'
 );
 
+// Packages that need to be transpiled
+const compileNodeModules = [
+  'react-native',
+  'react-native-web',
+  'react-native-reanimated',
+  'react-native-gesture-handler',
+  'react-native-safe-area-context',
+  'react-native-svg',
+  'react-native-vector-icons',
+  '@react-native',
+  'react-native-worklets',
+].map((moduleName) => path.resolve(appDirectory, `node_modules/${moduleName}`));
+
 const babelLoaderConfiguration = {
   test: /\.(js|jsx|ts|tsx)$/,
-  exclude: /node_modules\/(?!(react-native|react-native-|@react-native|@unimodules)\/).*/,
+  include: [
+    path.resolve(appDirectory, 'index.web.js'),
+    path.resolve(appDirectory, 'App.tsx'),
+    path.resolve(appDirectory, 'src'),
+    ...compileNodeModules,
+  ],
   use: {
     loader: 'babel-loader',
     options: {
@@ -27,6 +46,8 @@ const babelLoaderConfiguration = {
         ...(moduleResolverPlugin ? [moduleResolverPlugin] : []),
         // 웹 환경을 위한 플러그인
         'react-native-web',
+        // Reanimated babel plugin for web
+        'react-native-reanimated/plugin',
       ],
     },
   },
@@ -37,7 +58,23 @@ const imageLoaderConfiguration = {
   type: 'asset/resource',
 };
 
+// Font loader for react-native-vector-icons ttf files
+const fontLoaderConfiguration = {
+  test: /\.ttf$/,
+  type: 'asset/resource',
+  include: [
+    path.resolve(appDirectory, 'node_modules/react-native-vector-icons'),
+  ],
+};
+
 module.exports = {
+  // Suppress expected warnings from react-native-worklets
+  ignoreWarnings: [
+    {
+      module: /react-native-worklets/,
+      message: /Critical dependency/,
+    },
+  ],
   entry: path.resolve(appDirectory, 'index.web.js'),
   output: {
     filename: 'bundle.js',
@@ -45,17 +82,31 @@ module.exports = {
     clean: true,
   },
   module: {
-    rules: [babelLoaderConfiguration, imageLoaderConfiguration],
+    rules: [
+      babelLoaderConfiguration,
+      imageLoaderConfiguration,
+      fontLoaderConfiguration,
+    ],
   },
   resolve: {
     alias: {
       'react-native$': 'react-native-web',
+      // Reanimated web alias
+      'react-native-reanimated': path.resolve(
+        appDirectory,
+        'node_modules/react-native-reanimated'
+      ),
     },
     extensions: ['.web.tsx', '.web.ts', '.tsx', '.ts', '.web.js', '.js'],
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(appDirectory, 'public/index.html'),
+    }),
+    // Define process.env for browser compatibility
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env),
+      __DEV__: process.env.NODE_ENV !== 'production',
     }),
   ],
   devServer: {
