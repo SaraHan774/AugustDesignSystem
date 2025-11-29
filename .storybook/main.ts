@@ -7,6 +7,7 @@ const config: StorybookConfig = {
     '../src/design-system/**/*.stories.@(js|jsx|ts|tsx|mdx)',
     '../src/design-system/**/*.mdx',
   ],
+  staticDirs: [],
   addons: [
     '@storybook/addon-essentials',
     '@storybook/addon-docs',
@@ -23,6 +24,7 @@ const config: StorybookConfig = {
   async viteFinal(config) {
     return mergeConfig(config, {
       base: process.env.STORYBOOK_BASE || '/',
+      publicDir: false,
       resolve: {
         alias: {
           'react-native': 'react-native-web',
