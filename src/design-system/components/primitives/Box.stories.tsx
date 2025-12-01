@@ -74,7 +74,7 @@ export const Spacing: Story = {
 
 export const BorderRadius: Story = {
   render: () => (
-    <Box flexDirection="row" gap="md" flexWrap="wrap">
+    <Box flexDirection="row" gap="md" style={{ flexWrap: 'wrap' }}>
       <Box padding="md" backgroundColor="background.secondary" borderRadius="xs">
         <Text>XS Radius</Text>
       </Box>
