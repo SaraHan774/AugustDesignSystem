@@ -41,6 +41,11 @@ export default meta;
 type Story = StoryObj<typeof Progress>;
 
 export const Default: Story = {
+  render: (args) => (
+    <View style={{ width: 300 }}>
+      <Progress {...args} />
+    </View>
+  ),
   args: {
     value: 50,
     variant: 'linear',

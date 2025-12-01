@@ -7,38 +7,73 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, Animated } from 'react-native-web';
 
-// Shared value - use React state as fallback
-export function useSharedValue<T>(initialValue: T) {
-  const ref = React.useRef(initialValue);
+// Type for shared value
+interface SharedValue<T> {
+  value: T;
+  _listeners: Set<() => void>;
+  addListener: (listener: () => void) => () => void;
+}
+
+// Create shared value with listener support
+function createSharedValue<T>(initialValue: T): SharedValue<T> {
+  const listeners = new Set<() => void>();
+  let currentValue = initialValue;
+
   return {
-    value: ref.current,
-    get: () => ref.current,
-    set: (newValue: T) => {
-      ref.current = newValue;
+    get value() {
+      return currentValue;
+    },
+    set value(newValue: T) {
+      currentValue = newValue;
+      listeners.forEach(listener => listener());
+    },
+    _listeners: listeners,
+    addListener(listener: () => void) {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
     },
   };
 }
 
-// Animated style hook - returns static styles
-export function useAnimatedStyle(styleCallback: () => any, deps?: any[]) {
-  return React.useMemo(() => {
-    try {
-      return styleCallback();
-    } catch {
-      return {};
-    }
-  }, deps || []);
+// Shared value hook - use state to trigger re-renders
+export function useSharedValue<T>(initialValue: T): SharedValue<T> {
+  const sharedValueRef = React.useRef<SharedValue<T>>();
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+
+  if (!sharedValueRef.current) {
+    sharedValueRef.current = createSharedValue(initialValue);
+  }
+
+  React.useEffect(() => {
+    const unsubscribe = sharedValueRef.current!.addListener(forceUpdate);
+    return unsubscribe;
+  }, []);
+
+  return sharedValueRef.current;
 }
 
-// Animated props hook
-export function useAnimatedProps(propsCallback: () => any, deps?: any[]) {
-  return React.useMemo(() => {
-    try {
-      return propsCallback();
-    } catch {
-      return {};
-    }
-  }, deps || []);
+// Animated style hook - returns styles recalculated on each render
+export function useAnimatedStyle(styleCallback: () => any, _deps?: any[]) {
+  // Always recalculate on each render since we're using shared values that trigger re-renders
+  try {
+    const result = styleCallback();
+    return result;
+  } catch (error) {
+    console.error('[reanimated-mock] useAnimatedStyle error:', error);
+    return {};
+  }
+}
+
+// Animated props hook - returns props recalculated on each render
+export function useAnimatedProps(propsCallback: () => any, _deps?: any[]) {
+  // Always recalculate on each render since we're using shared values that trigger re-renders
+  try {
+    const result = propsCallback();
+    return result;
+  } catch (error) {
+    console.error('[reanimated-mock] useAnimatedProps error:', error);
+    return {};
+  }
 }
 
 // Derived value
@@ -57,14 +92,24 @@ export function useDerivedValue<T>(callback: () => T, deps?: any[]) {
   };
 }
 
-// Animation functions - return immediately
-export function withTiming(toValue: number, config?: any, callback?: (finished?: boolean) => void) {
-  if (callback) callback(true);
-  return toValue;
+// Animation helper - creates a value that can be assigned to shared value
+// and will animate over time using CSS transitions (for web simplicity)
+export function withTiming(toValue: number, config?: { duration?: number }, callback?: (finished?: boolean) => void) {
+  // Return an object that marks this as an animation target
+  const result = toValue as any;
+  // Schedule callback if provided
+  if (callback) {
+    const duration = config?.duration ?? 300;
+    setTimeout(() => callback(true), duration);
+  }
+  return result;
 }
 
 export function withSpring(toValue: number, config?: any, callback?: (finished?: boolean) => void) {
-  if (callback) callback(true);
+  // Spring animations fall back to timing on web
+  if (callback) {
+    setTimeout(() => callback(true), 300);
+  }
   return toValue;
 }
 
@@ -145,7 +190,60 @@ export function runOnUI(fn: Function) {
 // Animated components factory
 function createAnimatedComponent(Component: any) {
   const AnimatedComponent = React.forwardRef((props: any, ref: any) => {
-    return React.createElement(Component, { ...props, ref });
+    // Extract animatedProps and merge them with regular props
+    const { animatedProps, style, ...restProps } = props;
+
+    // Merge animated props into the component props
+    const mergedProps = {
+      ...restProps,
+      ...(animatedProps || {}),
+      ref,
+    };
+
+    // Handle style - merge animated styles if style is an array
+    if (style !== undefined) {
+      if (Array.isArray(style)) {
+        // Process style array: keep objects, call functions with default state
+        const processedStyles: any[] = [];
+        const styleFunctions: Function[] = [];
+
+        for (const s of style.flat(Infinity)) {
+          if (!s) continue;
+          if (typeof s === 'function') {
+            // Collect style functions (like Pressable's state-based styles)
+            styleFunctions.push(s);
+          } else {
+            processedStyles.push(s);
+          }
+        }
+
+        // If there are style functions, we need to pass them through for Pressable
+        // Otherwise, just use the processed styles
+        if (styleFunctions.length > 0) {
+          // For components like Pressable that use style functions,
+          // create a function that combines static and dynamic styles
+          mergedProps.style = (state: any) => {
+            const dynamicStyles = styleFunctions.map(fn => {
+              try {
+                return fn(state);
+              } catch {
+                return {};
+              }
+            });
+            return [...processedStyles, ...dynamicStyles];
+          };
+        } else {
+          mergedProps.style = processedStyles;
+        }
+      } else if (typeof style === 'function') {
+        // If style is a function, pass it through for state-based styling
+        mergedProps.style = style;
+      } else {
+        mergedProps.style = style;
+      }
+    }
+
+    return React.createElement(Component, mergedProps);
   });
   AnimatedComponent.displayName = `Animated.${Component.displayName || Component.name || 'Component'}`;
   return AnimatedComponent;

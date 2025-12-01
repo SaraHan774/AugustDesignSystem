@@ -26,6 +26,8 @@ const config: StorybookConfig = {
       base: process.env.STORYBOOK_BASE || '/',
       publicDir: false,
       resolve: {
+        // Prioritize .web.tsx/.web.ts extensions for web builds
+        extensions: ['.web.tsx', '.web.ts', '.web.js', '.tsx', '.ts', '.js', '.jsx', '.json'],
         alias: {
           // Mock React Native internal modules not available in react-native-web
           // codegenNativeComponent는 함수를 default export로 제공해야 함 (react-native-safe-area-context가 사용)
@@ -38,6 +40,8 @@ const config: StorybookConfig = {
           'react-native-gesture-handler': path.resolve(__dirname, './mocks/react-native-gesture-handler.tsx'),
           // Mock react-native-reanimated for web
           'react-native-reanimated': path.resolve(__dirname, './mocks/react-native-reanimated.ts'),
+          // Mock react-native-safe-area-context for web
+          'react-native-safe-area-context': path.resolve(__dirname, './mocks/react-native-safe-area-context.tsx'),
           // react-native-web를 확장한 버전 사용 (TurboModuleRegistry 포함)
           'react-native': path.resolve(__dirname, './mocks/react-native-web-extended.ts'),
           'react-native-vector-icons/MaterialIcons': path.resolve(__dirname, './mocks/react-native-vector-icons.tsx'),

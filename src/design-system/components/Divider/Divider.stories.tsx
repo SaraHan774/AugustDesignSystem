@@ -37,15 +37,18 @@ type Story = StoryObj<typeof Divider>;
 
 export const Default: Story = {
   render: () => (
-    <View style={{ padding: 16, width: '100%' }}>
+    <View style={{ padding: 16, width: 300 }}>
       <Divider variant="full" />
     </View>
   ),
+  parameters: {
+    layout: 'centered',
+  },
 };
 
 export const Variants: Story = {
   render: () => (
-    <View style={{ gap: 24, padding: 16 }}>
+    <View style={{ gap: 24, padding: 16, width: 300 }}>
       <View>
         <Text style={{ marginBottom: 8 }}>Full (edge-to-edge)</Text>
         <Divider variant="full" />
@@ -92,7 +95,7 @@ export const Vertical: Story = {
 
 export const WithLabel: Story = {
   render: () => (
-    <View style={{ padding: 16, width: '100%' }}>
+    <View style={{ padding: 16, width: 300 }}>
       <Divider variant="withLabel" label="OR" />
     </View>
   ),
@@ -100,7 +103,7 @@ export const WithLabel: Story = {
 
 export const InList: Story = {
   render: () => (
-    <View style={{ padding: 16, gap: 0 }}>
+    <View style={{ padding: 16, gap: 0, width: 300 }}>
       <View style={{ paddingVertical: 12 }}>
         <Text>Item 1</Text>
       </View>
